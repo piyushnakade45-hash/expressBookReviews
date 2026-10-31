@@ -25,11 +25,27 @@ public_users.get('/isbn/:isbn', function (req, res) {
   }
 });
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+// Get book details based on author
+public_users.get('/author/:author', function (req, res) {
+  const author = req.params.author.toLowerCase();
+  const booksByAuthor = [];
 
+  Object.keys(books).forEach((isbn) => {
+    if (books[isbn].author.toLowerCase() === author) {
+      booksByAuthor.push({
+        isbn: isbn,
+        title: books[isbn].title,
+        reviews: books[isbn].reviews
+      });
+    }
+  });
+
+  if (booksByAuthor.length > 0) {
+    return res.status(200).send(JSON.stringify({ booksbyauthor: booksByAuthor }, null, 4));
+  } else {
+    return res.status(404).json({ message: "No books found for author " + req.params.author });
+  }
+});
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
